@@ -32,3 +32,10 @@ def register():
             print("sita")
             return redirect("/login")
     return render_template("register.html")    
+
+
+
+
+@controllers.route("/login", methods=['GET','POST'])
+def login():
+    return render_template('login.html')
