@@ -1,4 +1,4 @@
-from flask import Flask,render_template,redirect,request,Response,Blueprint
+from flask import Flask,render_template,redirect,request,Response,Blueprint,flash
 
 
 from database import db
@@ -21,7 +21,7 @@ def register():
         if(emailexsist):
             return render_template("duplicate.html")
         else:
-            new_user = User(email=email,fullname=fullname,password=password,address=address,pincode=pincode)
+            new_user = User(email=email,fullname=fullname,password=password,address=address,pincode=pincode,role="user")
             db.session.add(new_user)
             db.session.commit()
             print("sita")
@@ -33,4 +33,14 @@ def register():
 
 @controllers.route("/login", methods=['GET','POST'])
 def login():
+    print("Starting the login")
+    if request=='POST':
+        email = request.form.get("email")
+        password= request.form.get("password")
+    
+
+        if not email or not password:
+            flash("Plaese provide both email and password","danger")
+            return render_template("login.html")
+
     return render_template('login.html')
