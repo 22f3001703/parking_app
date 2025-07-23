@@ -5,6 +5,7 @@ from database import db
 from models.models import User
 
 
+
 controllers = Blueprint('controllers', __name__)
 @controllers.route("/register", methods=['GET','POST'])
 def register():
@@ -34,13 +35,37 @@ def register():
 @controllers.route("/login", methods=['GET','POST'])
 def login():
     print("Starting the login")
-    if request=='POST':
+    if request.method=='POST':
         email = request.form.get("email")
         password= request.form.get("password")
     
+        print(email)
+        print(password)
 
         if not email or not password:
-            flash("Plaese provide both email and password","danger")
-            return render_template("login.html")
-
+            return render_template("duplicate.html")
+        
+        theUser = User.query.filter_by(email=email).first()
+        if not theUser:
+            render_template("duplicate.html")
+            return render_template("register.html") 
+        if(theUser.password==password):
+            print("Logged in succesfully🍀")
+            print("redirecting to dashboard")
+            if(theUser.role=="admin"):
+                return redirect("/admin/dashboard")
+            else:
+                return redirect("/user/dashboard")
+        
     return render_template('login.html')
+
+
+@controllers.route("/user/dashboard", methods=['GET','POST'])
+def userdashboard():
+    return render_template("dashboard.html")
+
+
+
+@controllers.route("/admin/dashboard", methods=['GET','POST'])
+def admindashboard():
+    return render_template("admindashboard.html")
