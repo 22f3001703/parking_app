@@ -75,3 +75,16 @@ def userdashboard():
 @controllers.route("/admin/dashboard", methods=['GET','POST'])
 def admindashboard():
     return render_template("admindashboard.html")
+
+
+@controllers.route("/admin/dashboard/users", methods=['GET','POST'])
+def userDetails():
+    return render_template("userDetails.html")
+
+@controllers.route("/admin/dashboard/summary", methods=['GET','POST'])
+def summary():
+    return render_template("summary.html")
+
+@controllers.route("/admin/dashboard/search", methods=['GET','POST'])
+def search():
+    return render_template("search.html")
