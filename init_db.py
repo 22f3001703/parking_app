@@ -16,7 +16,8 @@ with app.app_context():
         password="error",
         address="Dhaula kuan",
         pincode = 110010,
-        role="admin"
+        role="admin",
+        status=0
     )
     db.session.add(admin)
     db.session.commit()

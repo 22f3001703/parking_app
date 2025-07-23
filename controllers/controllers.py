@@ -22,7 +22,7 @@ def register():
         if(emailexsist):
             return render_template("duplicate.html")
         else:
-            new_user = User(email=email,fullname=fullname,password=password,address=address,pincode=pincode,role="user")
+            new_user = User(email=email,fullname=fullname,password=password,address=address,pincode=pincode,role="user",status=0)
             db.session.add(new_user)
             db.session.commit()
             print("sita")
@@ -51,10 +51,16 @@ def login():
             return render_template("register.html") 
         if(theUser.password==password):
             print("Logged in succesfully🍀")
-            print("redirecting to dashboard")
+            
             if(theUser.role=="admin"):
+                theUser.status=1
+                db.session.commit()
+                print("redirecting to dashboard")
                 return redirect("/admin/dashboard")
             else:
+                theUser.status=1
+                db.session.commit()
+                print("redirecting to dashboard")
                 return redirect("/user/dashboard")
         
     return render_template('login.html')

@@ -8,6 +8,7 @@ class User(db.Model):
     address = db.Column(db.String(200),nullable=False)
     pincode = db.Column(db.Integer(),nullable= False)
     role = db.Column(db.String(10),nullable=False)
+    status=db.Column(db.Integer(),nullable=False)
 
 
 
