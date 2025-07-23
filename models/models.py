@@ -7,6 +7,7 @@ class User(db.Model):
     password = db.Column(db.String(),nullable= False)
     address = db.Column(db.String(200),nullable=False)
     pincode = db.Column(db.Integer(),nullable= False)
+    role = db.Column(db.String(10),nullable=False)
 
 
 
