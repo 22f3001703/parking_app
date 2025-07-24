@@ -11,4 +11,14 @@ class User(db.Model):
     status=db.Column(db.Integer(),nullable=False)
 
 
+class ParkingLot(db.Model):
+    id=db.Column(db.Integer(),primary_key=True)
+    location_name = db.Column(db.String(250),nullable=False)
+    pincode=db.Column(db.Integer(),nullable=False)
+    price=db.Column(db.Integer(),nullable=False)   
+    max_spots=db.Column(db.Integer(),nullable=False) 
+    address=db.Column(db.String(250),nullable=False)
+    occupied=db.Column(db.Integer(),default=0)
+
+
 
