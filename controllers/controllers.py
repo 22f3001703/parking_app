@@ -122,3 +122,25 @@ def addParkingLot():
         return redirect("/admin/dashboard")
         
     return render_template("addParkingLot.html")
+
+
+@controllers.route("/admin/dashboard/editlot/<int:lot_id>", methods=['GET','POST'])
+def editParkingLot(lot_id):
+    parkinglot=ParkingLot.query.get_or_404(lot_id)
+    if request.method=="POST":
+        parkinglot.location_name = request.form.get("location_name")
+        parkinglot.address=   request.form.get("address")
+        parkinglot.pincode= request.form.get("pincode")
+        parkinglot.price= request.form.get("price")
+        parkinglot.max_spots = request.form.get("max_spots")
+        db.session.commit()
+        return redirect("/admin/dashboard")
+    return render_template("editParkingLot.html",parkinglot=parkinglot)
+
+
+@controllers.route("/admin/dashboard/deletelot/<int:lot_id>", methods=['GET','POST'])
+def deleteParkingLOt(lot_id):
+    parkinglot = ParkingLot.query.get_or_404(lot_id)
+    db.session.delete(parkinglot)
+    db.session.commit()
+    return redirect("/admin/dashboard")

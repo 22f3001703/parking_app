@@ -66,7 +66,7 @@
         <div class="card" style="width: 18rem;  margin-left: 10px; margin-top: 10px;">
         <div class="card-body text-center" style="margin:10px">
         <h5 class="card-title">{{lot.location_name}}</h5>
-        <span style="align-content: center;"><a href="">Edit</a>||<a href="">Delete</a></span>
+        <span style="align-content: center;"><a href="/admin/dashboard/editlot/{{ lot.id }}">Edit</a>||<a href="/admin/dashboard/deletelot/{{ lot.id }}">Delete</a></span>
         <p>Occupied({{lot.occupied}}/{{lot.max_spots}})</p>
         <hr>
      {% set avail=lot.max_spots-lot.occupied %}   
