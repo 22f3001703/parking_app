@@ -10,7 +10,6 @@ class User(db.Model):
     role = db.Column(db.String(10),nullable=False)
     status=db.Column(db.Integer(),nullable=False)
 
-
 class ParkingLot(db.Model):
     id=db.Column(db.Integer(),primary_key=True)
     location_name = db.Column(db.String(250),nullable=False)
@@ -19,6 +18,13 @@ class ParkingLot(db.Model):
     max_spots=db.Column(db.Integer(),nullable=False) 
     address=db.Column(db.String(250),nullable=False)
     occupied=db.Column(db.Integer(),default=0)
+
+
+class ParkingSpot(db.Model):
+    id=db.Column(db.Integer(),primary_key=True)
+    lotid=db.Column(db.Integer(),nullable=False)
+    status = db.Column(db.String(5),nullable=False)
+
 
 
 

@@ -76,12 +76,6 @@ def login():
     return render_template('login.html')
 
 
-@controllers.route("/user/dashboard", methods=['GET','POST'])
-def userdashboard():
-    return render_template("dashboard.html")
-
-
-
 @controllers.route("/admin/dashboard", methods=['GET','POST'])
 def admindashboard():
     parkinglot=ParkingLot.query.all()
@@ -149,3 +143,33 @@ def deleteParkingLOt(lot_id):
     db.session.delete(parkinglot)
     db.session.commit()
     return redirect("/admin/dashboard")
+
+
+
+@controllers.route("/user/dashboard", methods=['GET','POST'])
+def userdashboard():
+    
+    return render_template("userdashboard.html")
+
+
+@controllers.route("/user/dashboard/searchandbook", methods=['GET','POST'])
+def searchAndBook():
+    if request.method=="POST":
+        querytype=request.form.get("querytype")
+        query=request.form.get("query")
+        if querytype=="pincode":
+            search_result = ParkingLot.query.filter_by(pincode=query).all()
+            for i in search_result:
+                print(i)
+        else:
+            search_result=ParkingLot.query.filter_by(location_name=query).all() 
+            for i in search_result:
+                print(i)     
+
+    return render_template("userSearchandBook.html",search_result=search_result,querytype=querytype)
+
+
+@controllers.route("/user/dashboard/summary", methods=['GET','POST'])
+def userSummary():
+    
+    return render_template("userSummary.html")
