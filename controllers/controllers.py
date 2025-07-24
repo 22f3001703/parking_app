@@ -95,7 +95,12 @@ def admindashboard():
 
 @controllers.route("/admin/dashboard/users", methods=['GET','POST'])
 def userDetails():
-    return render_template("userDetails.html")
+    getuser = User.query.filter_by(role="user")
+    
+    for i in getuser:
+        print(i.pincode)
+    print("executed")    
+    return render_template("userDetails.html",getuser=getuser)
 
 @controllers.route("/admin/dashboard/summary", methods=['GET','POST'])
 def summary():
