@@ -1,4 +1,5 @@
 from database import db
+import datetime 
 
 class User(db.Model):
     id= db.Column(db.Integer(),primary_key=True)
@@ -24,7 +25,17 @@ class ParkingSpot(db.Model):
     id=db.Column(db.Integer(),primary_key=True)
     lotid=db.Column(db.Integer(),nullable=False)
     status = db.Column(db.String(5),nullable=False)
+    veichleNumber=db.Column(db.String(50),nullable=False)
 
 
+
+class ReserveParkingSpot(db.Model):
+    id=db.Column(db.Integer(),primary_key=True)
+    spotid=db.Column(db.Integer(),nullable=False)
+    lotid=db.Column(db.Integer(),nullable=False)
+    userid=db.Column(db.Integer(),nullable=False)
+    parking_time=db.Column(db.DateTime,nullable=False,default=datetime.utcnow)
+    release_time=db.Column(db.DateTime,nullable=False,default=datetime.utcnow)
+    parkingcost=db.Column(db.Integer(),nullable=False)
 
 
