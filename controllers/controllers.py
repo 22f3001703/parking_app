@@ -34,8 +34,6 @@ def register():
     return render_template("register.html")    
 
 
-
-
 @controllers.route("/login", methods=['GET','POST'])
 def login():
     print("Starting the login")
@@ -123,9 +121,11 @@ def userDetails():
     print("executed")    
     return render_template("userDetails.html",getuser=getuser)
 
+
 @controllers.route("/admin/dashboard/summary", methods=['GET','POST'])
 def summary():
     return render_template("summary.html")
+
 
 @controllers.route("/admin/dashboard/search", methods=['GET','POST'])
 def search():
@@ -184,7 +184,6 @@ def deleteParkingLOt(lot_id):
     return redirect("/admin/dashboard")
 
 
-
 @controllers.route("/user/dashboard", methods=['GET','POST'])
 def userdashboard():
 
@@ -224,9 +223,6 @@ def searchAndBook():
                 print(i) 
             return render_template("userSearchandBook.html",search_result=search_result,querytype=querytype)      
     return render_template("userSearchandBook.html")    
-
-
-    
 
 
 @controllers.route("/user/dashboard/summary", methods=['GET','POST'])
@@ -276,7 +272,6 @@ def bookNow(id):
     return render_template("bookParking.html",avaspots=avaspots , id = id )
 
 
-
 @controllers.route("/user/dashboard/reservethespot", methods=['GET','POST'])
 def reserveaspot():
     if(request.method=="POST"):
@@ -319,7 +314,6 @@ def reserveaspot():
         return redirect("/user/dashboard")
     
 
-
 @controllers.route("/user/dashboard/releasespot/<int:id>", methods=['GET','POST'])
 def releasespot(id):
     thereservation = ReserveParkingSpot.query.get_or_404(id)
@@ -354,7 +348,15 @@ def releasespot(id):
     return render_template("releaseSpot.html",thereservation=thereservation,release_time=release_time,totalfare=totalfare,id=id)
    
 
+@controllers.route("/admin/dashboard/view/<int:id>",methods=["GET","POST"])
+def viewSpot(id):
 
+    return render_template("viewSpot.html")
+
+
+@controllers.route("/admin/dashboard/view/extradetail/<int:id>",methods=["GET","POST"])
+def viewSpotInExtraDetail():
+    return render_template("viewSpotInExtraDetails.html")
 
 
 

@@ -73,10 +73,10 @@
         <hr>
      {% for spot in spots %} 
      {% if spot.status == "O" %} 
-    <button type="button" class="btn btn-danger" style="border-radius: 50%;">O</button>
+    <a type="button" class="btn btn-danger" style="border-radius: 50%;" href="/admin/dashboard/view/{{spot.id}}">O</a>
     {% else %}
     
-    <button type="button" class="btn btn-success" style="border-radius: 50%;">A</button>
+    <a type="button" class="btn btn-success" style="border-radius: 50%;" href="/admin/dashboard/view/{{spot.id}}">A</a>
      {% endif %}
      {%endfor%}
     </div>
