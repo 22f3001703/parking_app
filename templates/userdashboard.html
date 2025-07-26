@@ -60,32 +60,23 @@
   <th>Parking Time</th>
   <th>Action</th>
   </th>
-  {%for record in history%}
+  {%for i in recentParkingHistory%}
   <tr>
-    <td>{{record.id}}</td>
-    <td>{%set lot = parkinglotdict.get(record.lotid)%}
-      {{lot.location_name}}
-    </td>
-    <td>{%set spot = parkingspotdict.get(record.spotid) %}
-        {{spot.veichleNumber}}
-    </td>
-    <td>{{record.parking_time.strftime('%Y-%m-%d %H:%M')}}
-    </td>
+    <td>{{i[0]}}</td>
+    <td>{{i[6]}}</td>
+    <td>{{i[5]}}</td>
+    <td>{{i[3].strftime('%Y-%m-%d %H:%M') }}</td>
     <td>
-      {%if record.release_time%}
-      <button class="btn btn-primary" disabled>Parked Out</button>
+      {%if i[4]==0%}
+        <form action="/user/dashboard/release/{{ i[0] }}" method="POST">
+                <button type="submit" class="btn btn-danger">Release</button>
+            </form>
       {%else%}
-      <form action = "/user/dashboard/release/{{record.id}}" method="post">
-      <button class="btn btn-danger" type="submit">Release</button>
-      </form>
-      {%endif%}
+        <button class="btn btn-primary" disabled>Parked Out</button> 
+        {%endif%}     
     </td>
   </tr>
-  {%else%}
-  <tr>
-    <td>No parking history available</td>
-  </tr>
-  {% endfor %}
+  {%endfor%}
 </table>
 
 

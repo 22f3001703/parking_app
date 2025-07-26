@@ -164,18 +164,23 @@ def deleteParkingLOt(lot_id):
 def userdashboard():
 
     useremail=session.get("email")
-    reserveresult = ReserveParkingSpot.query.filter_by(email=useremail).all()
 
-    parkinglot = ParkingLot.query.all()
-    parkingspot= ParkingSpot.query.all()
+    recentParkingHistory = db.session.query(
+        ReserveParkingSpot.id,
+        ReserveParkingSpot.lotid,
+        ReserveParkingSpot.spotid,
+        ReserveParkingSpot.parking_time,
+        ReserveParkingSpot.ispai,
+        ReserveParkingSpot.veichleNumber,
+        ParkingLot.location_name
+    ).join(ParkingLot,ReserveParkingSpot.lotid==ParkingLot.id)\
+    .filter(ReserveParkingSpot.email==useremail)\
+    .all()
 
 
-    parkinglotdict = {lot.id: lot for lot in parkinglot}
-    parkingspotdict = {spot.id: spot for spot in parkingspot}
 
 
-
-    return render_template("userdashboard.html",reserveresult=reserveresult,parkinglotdict=parkinglotdict,parkingspotdict=parkingspotdict)
+    return render_template("userdashboard.html",recentParkingHistory=recentParkingHistory)
 
 
 @controllers.route("/user/dashboard/searchandbook", methods=['GET','POST'])
@@ -225,7 +230,7 @@ def bookNow(id):
 
         spot = ParkingSpot.query.filter_by(id=spotid, lotid=lotid).first()
         if spot:
-            spot.veichleNumber=veichleNumber
+            spot.veichleNumber=veichleNumber 
             db.session.commit()
 
 
@@ -278,7 +283,8 @@ def reserveaspot():
             lotid=lotid,
             email=email,
             parking_time=parking_time,
-            ispai=0
+            ispai=0,
+            veichleNumber=veichleNumber
            
             
         )
