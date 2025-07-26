@@ -176,6 +176,9 @@ def editParkingLot(lot_id):
 @controllers.route("/admin/dashboard/deletelot/<int:lot_id>", methods=['GET','POST'])
 def deleteParkingLOt(lot_id):
     parkinglot = ParkingLot.query.get_or_404(lot_id)
+    if(parkinglot.occupied>0):
+        print("Encountered")
+        return render_template("deleteerror.html")
     db.session.delete(parkinglot)
     db.session.commit()
     return redirect("/admin/dashboard")
