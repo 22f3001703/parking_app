@@ -83,13 +83,35 @@ def login():
 
 @controllers.route("/admin/dashboard", methods=['GET','POST'])
 def admindashboard():
-    parkinglot=ParkingLot.query.all()
+    parkingspot=ParkingSpot.query.all()
+
+    lotandspotstructure={}
+    for spot in parkingspot:
+        if spot.lotid not in lotandspotstructure:
+            lotandspotstructure[spot.lotid]=[]
+        lotandspotstructure[spot.lotid].append(spot)    
+
+    distinctlotids=list(lotandspotstructure.keys())    
+    lots=ParkingLot.query.filter(ParkingLot.id.in_(distinctlotids)).all()
+
+
+    thefinalcards=[]
+    for lot in lots:
+        thefinalcards.append(
+
+            {
+                'lot': lot,
+                'spots': lotandspotstructure[lot.id]
+            }
+        )
+
+
     print("ram")
     
 
     return render_template("admindashboard.html",fullname=session["fullname"]
                            ,status=session["status"],
-                           role=session["role"],parkinglot=parkinglot)
+                           role=session["role"],thefinalcards=thefinalcards)
 
 
 @controllers.route("/admin/dashboard/users", methods=['GET','POST'])
@@ -252,7 +274,7 @@ def bookNow(id):
 
 
 
-@controllers.route("/user/dashboard/reserveaspot", methods=['GET','POST'])
+@controllers.route("/user/dashboard/reservethespot", methods=['GET','POST'])
 def reserveaspot():
     if(request.method=="POST"):
         print("post")  
