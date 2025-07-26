@@ -46,21 +46,26 @@
 
     <div class="login-container">
         <h2>New Parking Spot</h2>
-        <form action="/admin/dashboard/addparkinglot" method="POST">
+        <form action="/admin/dashboard/reserveaspot" method="POST">
        
             <div class="mb-3">
-                <label for="text" class="form-label"><b>Spot Id</b></label>
-                <input type="text" class="form-control" id="location_name"  name ="location_name" required>
+                <label for="spot_id" class="form-label"><b>Select Available Spot</b></label>
+                <select type="number" class="form-control" id="spot_id"  name ="spot_id" required>
+                    <option value="" disabled selected>Select an available spot</option>
+                    {% for spot in avaspots %}
+                    <option value="{{spot}}">{{spot}}</option>
+                    {%endfor%}
+                    </select>
             </div>
           
             <div class="mb-3">
                 <label for="lotid" class="form-label"><b>Lot Id</b></label>
-                <input type="text" class="form-control" id="Lotid" name="lotid" required>
+                <input type="text" class="form-control" id="Lotid" name="lotid" value="{{id}}" required>
             </div>
 
              <div class="mb-3">
-                <label for="email" class="form-label"><b>User Email</b></label>
-                <input type="email" class="form-control" id="email" placeholder="email" name ="email" required>
+                <label for="email" class="form-label"><b>User Id</b></label>
+                <input type="email" class="form-control" id="email" value="{{session['email']}}" name ="email" required>
             </div>
 
              <div class="mb-3">

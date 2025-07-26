@@ -33,9 +33,9 @@ class ReserveParkingSpot(db.Model):
     id=db.Column(db.Integer(),primary_key=True)
     spotid=db.Column(db.Integer(),nullable=False)
     lotid=db.Column(db.Integer(),nullable=False)
-    userid=db.Column(db.Integer(),nullable=False)
+    email=db.Column(db.String(25),nullable=False)
     parking_time=db.Column(db.DateTime,nullable=False,default=datetime.UTC)
-    release_time=db.Column(db.DateTime,nullable=False,default=datetime.UTC)
-    parkingcost=db.Column(db.Integer(),nullable=False)
+    release_time=db.Column(db.DateTime,nullable=True)
+    parkingcost=db.Column(db.Integer(),nullable=True,default=0)
 
 

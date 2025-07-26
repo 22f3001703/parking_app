@@ -84,7 +84,7 @@
         <td>{{y.max_spots-y.occupied}}</td>
         <td>
             {% if y.max_spots-y.occupied>0%}
-            <a class="btn btn-success" href="/user/dashboard/booknow">Book Now</a>
+            <a class="btn btn-success" href="/user/dashboard/booknow/{{y.id}}">Book Now</a>
             {%else%}
             <button class="btn btn-danger">Sorry</button>
             {%endif%}

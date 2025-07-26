@@ -6,6 +6,7 @@ from models.models import User
 from models.models import ParkingLot
 from models.models import ParkingSpot
 from models.models import ReserveParkingSpot
+from datetime import datetime 
 
 
 
@@ -61,6 +62,7 @@ def login():
                 session['id']=theUser.id
                 session["fullname"]=theUser.fullname
                 session["role"]=theUser.role
+                session["email"]=theUser.email
                 session["status"]=theUser.status
                 
                 print("redirecting to dashboard")
@@ -71,6 +73,7 @@ def login():
                 session['id']=theUser.id
                 session["fullname"]=theUser.fullname
                 session["role"]=theUser.role
+                session["email"]=theUser.email
                 session["status"]=theUser.status
                 print("redirecting to dashboard")
                 return redirect("/user/dashboard")
@@ -190,8 +193,83 @@ def userSummary():
     return render_template("userSummary.html")
 
 
-@controllers.route("/user/dashboard/booknow", methods=['GET','POST'])
-def bookNow():
-    return render_template("bookParking.html")
+@controllers.route("/user/dashboard/booknow/<int:id>", methods=['GET','POST'])
+def bookNow(id):
+    freespots=ParkingSpot.query.filter_by(lotid=id,status='A').with_entities(ParkingSpot.id).all()
+    avaspots=[spot_id for (spot_id,) in freespots]
+
+
+    for spot_id in avaspots:
+        print(spot_id)
+
+    if(request.method=="POST"):
+        print("post")  
+        spotid=request.form.get("spot_id")
+        lotid=request.form.get("lotid")
+        email=request.form.get("email")
+        parking_time=datetime.utcnow()
+        veichleNumber=request.form.get("veichle")
+
+
+        spot = ParkingSpot.query.filter_by(id=spotid, lotid=lotid).first()
+        if spot:
+            spot.veichleNumber=veichleNumber
+            db.session.commit()
+
+
+        reserveparkingspot= ReserveParkingSpot(
+            
+            spotid=spotid,
+            lotid=lotid,
+            email=email,
+            parking_time=parking_time,
+            veichleNumber=veichleNumber
+            
+        )
+        db.session.add(reserveparkingspot)
+        db.session.commit()
+
+        return redirect("/user/dashboard")
+
+    return render_template("bookParking.html",avaspots=avaspots , id = id )
+
+
+
+@controllers.route("/admin/dashboard/reserveaspot", methods=['GET','POST'])
+def reserveaspot():
+    if(request.method=="POST"):
+        print("post")  
+        spotid=request.form.get("spot_id")
+        lotid=request.form.get("lotid")
+        email=request.form.get("email")
+        parking_time=datetime.utcnow()
+        veichleNumber=request.form.get("veichle")
+
+
+        spot = ParkingSpot.query.filter_by(id=spotid, lotid=lotid).first()
+        if spot:
+            spot.veichleNumber=veichleNumber
+            db.session.commit()
+
+
+        reserveparkingspot= ReserveParkingSpot(
+            
+            spotid=spotid,
+            lotid=lotid,
+            email=email,
+            parking_time=parking_time,
+           
+            
+        )
+        db.session.add(reserveparkingspot)
+        db.session.commit()
+
+        return redirect("/user/dashboard")
+    
+
+
+
+
+
 
 
