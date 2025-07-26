@@ -60,9 +60,32 @@
   <th>Parking Time</th>
   <th>Action</th>
   </th>
+  {%for record in history%}
   <tr>
-    <td></td>
+    <td>{{record.id}}</td>
+    <td>{%set lot = parkinglotdict.get(record.lotid)%}
+      {{lot.location_name}}
+    </td>
+    <td>{%set spot = parkingspotdict.get(record.spotid) %}
+        {{spot.veichleNumber}}
+    </td>
+    <td>{{record.parking_time.strftime('%Y-%m-%d %H:%M')}}
+    </td>
+    <td>
+      {%if record.release_time%}
+      <button class="btn btn-primary" disabled>Parked Out</button>
+      {%else%}
+      <form action = "/user/dashboard/release/{{record.id}}" method="post">
+      <button class="btn btn-danger" type="submit">Release</button>
+      </form>
+      {%endif%}
+    </td>
   </tr>
+  {%else%}
+  <tr>
+    <td>No parking history available</td>
+  </tr>
+  {% endfor %}
 </table>
 
 

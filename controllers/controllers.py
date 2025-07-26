@@ -162,12 +162,20 @@ def deleteParkingLOt(lot_id):
 
 @controllers.route("/user/dashboard", methods=['GET','POST'])
 def userdashboard():
-    
-    reserveresult = ReserveParkingSpot()
+
+    useremail=session.get("email")
+    reserveresult = ReserveParkingSpot.query.filter_by(email=useremail).all()
+
+    parkinglot = ParkingLot.query.all()
+    parkingspot= ParkingSpot.query.all()
+
+
+    parkinglotdict = {lot.id: lot for lot in parkinglot}
+    parkingspotdict = {spot.id: spot for spot in parkingspot}
 
 
 
-    return render_template("userdashboard.html")
+    return render_template("userdashboard.html",reserveresult=reserveresult,parkinglotdict=parkinglotdict,parkingspotdict=parkingspotdict)
 
 
 @controllers.route("/user/dashboard/searchandbook", methods=['GET','POST'])
