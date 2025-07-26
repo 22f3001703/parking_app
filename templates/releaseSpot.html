@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Release Parking Spot</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #e6f7e7;
+        }
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .login-container h2 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-control {
+            border-radius: 10px;
+        }
+        .btn-primary {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar bg-body-tertiary">
+  <div class="container-fluid text-center">
+    <a class="navbar-brand mx-auto " href="#">
+      <img src="https://images.pexels.com/photos/164634/pexels-photo-164634.jpeg?_gl=1*1rfblvq*_ga*MTY5NDc0NzA3NC4xNzUzMjk4NzE5*_ga_8JE65Q40S6*czE3NTMyOTg3MTgkbzEkZzEkdDE3NTMyOTg3MjMkajU1JGwwJGgw" width="30" height="24" class="d-inline-block align-text-top" style="align-content: center;">
+      Release Parking Spot
+    </a>
+  </div>
+        </nav>
+
+    <div class="login-container mt-lg-5">
+        <h2>Release Parking Spot</h2>
+        <form action="/user/dashboard/releasespot/{{id}}" method="POST">
+       
+             <div class="mb-3">
+                <label for="spotid" class="form-label"><b>Spot Id</b></label>
+                <input type="text" class="form-control" id="spotid" name="spotid" value="{{thereservation.spotid}}" required>
+            </div>
+             <div class="mb-3">
+                <label for="veichle" class="form-label"><b>Veichle Number</b></label>
+                <input type="text" class="form-control" id="veichle" name="veichle" value="{{thereservation.veichleNumber}}" required>
+            </div>
+             <div class="mb-3">
+                <label for="parkingtime" class="form-label"><b>Parking Time</b></label>
+                <input type="text" class="form-control" id="parkingtime" name="parkingtime" value="{{thereservation.parking_time}}" required>
+            </div>
+             <div class="mb-3">
+                <label for="releasetime" class="form-label"><b>Release Time</b></label>
+                <input type="text" class="form-control" id="releasetime" name="releasetime" value="{{release_time}}" required>
+            </div>
+             <div class="mb-3">
+                <label for="totalcost" class="form-label"><b>Total Cost</b></label>
+                <input type="text" class="form-control" id="releasetime" name="releasetime" value="{{totalfare}}" required>
+            </div>
+            
+
+     
+            <button type="submit" class="btn btn-success" href="">Release</button>
+            <a href="/user/dashboard" class="btn btn-danger">Cancel</a>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

@@ -252,7 +252,7 @@ def bookNow(id):
 
 
 
-@controllers.route("/admin/dashboard/reserveaspot", methods=['GET','POST'])
+@controllers.route("/user/dashboard/reserveaspot", methods=['GET','POST'])
 def reserveaspot():
     if(request.method=="POST"):
         print("post")  
@@ -295,6 +295,39 @@ def reserveaspot():
     
 
 
+@controllers.route("/user/dashboard/releasespot/<int:id>", methods=['GET','POST'])
+def releasespot(id):
+    thereservation = ReserveParkingSpot.query.get_or_404(id)
+    release_time=datetime.utcnow()
+    duration = release_time-thereservation.parking_time
+    timeinhours=int(duration.total_seconds()//3600)
+
+    if duration.total_seconds()%3600!=0:
+        timeinhours+=1
+    thelot = ParkingLot.query.get(thereservation.lotid)
+    totalfare=timeinhours*thelot.price
+    if request.method=="POST":
+        thereservation = ReserveParkingSpot.query.get_or_404(id)
+        
+
+        thespot = ParkingSpot.query.get(thereservation.spotid)
+        
+
+        if thespot and thelot and thereservation.ispai==0:
+            thespot.status="A"
+            thespot.veichleNumber=None
+            
+
+            thereservation.release_time=release_time
+            thereservation.ispai=1
+            thereservation.parkingcost=totalfare
+
+            thelot.occupied-=1
+            db.session.commit()
+            return redirect("/user/dashboard")
+
+    return render_template("releaseSpot.html",thereservation=thereservation,release_time=release_time,totalfare=totalfare,id=id)
+   
 
 
 

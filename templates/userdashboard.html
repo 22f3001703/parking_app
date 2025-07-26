@@ -68,9 +68,9 @@
     <td>{{i[3].strftime('%Y-%m-%d %H:%M') }}</td>
     <td>
       {%if i[4]==0%}
-        <form action="/user/dashboard/release/{{ i[0] }}" method="POST">
-                <button type="submit" class="btn btn-danger">Release</button>
-            </form>
+        <a href="/user/dashboard/releasespot/{{i[0]}}" class="btn btn-danger">
+        Release
+        </a>
       {%else%}
         <button class="btn btn-primary" disabled>Parked Out</button> 
         {%endif%}     
