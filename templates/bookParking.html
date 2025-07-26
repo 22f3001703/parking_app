@@ -4,8 +4,77 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Book Parking</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #e6f7e7;
+        }
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .login-container h2 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-control {
+            border-radius: 10px;
+        }
+        .btn-primary {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 10px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Let's book it bro </h1>
+
+    <nav class="navbar bg-body-tertiary">
+  <div class="container-fluid text-center">
+    <a class="navbar-brand mx-auto " href="#">
+      <img src="https://images.pexels.com/photos/164634/pexels-photo-164634.jpeg?_gl=1*1rfblvq*_ga*MTY5NDc0NzA3NC4xNzUzMjk4NzE5*_ga_8JE65Q40S6*czE3NTMyOTg3MTgkbzEkZzEkdDE3NTMyOTg3MjMkajU1JGwwJGgw" width="30" height="24" class="d-inline-block align-text-top" style="align-content: center;">
+      Reserve Parking Spots
+    </a>
+  </div>
+        </nav>
+
+    <div class="login-container">
+        <h2>New Parking Spot</h2>
+        <form action="/admin/dashboard/addparkinglot" method="POST">
+       
+            <div class="mb-3">
+                <label for="text" class="form-label"><b>Spot Id</b></label>
+                <input type="text" class="form-control" id="location_name"  name ="location_name" required>
+            </div>
+          
+            <div class="mb-3">
+                <label for="lotid" class="form-label"><b>Lot Id</b></label>
+                <input type="text" class="form-control" id="Lotid" name="lotid" required>
+            </div>
+
+             <div class="mb-3">
+                <label for="email" class="form-label"><b>User Email</b></label>
+                <input type="email" class="form-control" id="email" placeholder="email" name ="email" required>
+            </div>
+
+             <div class="mb-3">
+                <label for="text" class="form-label"><b>Veichle</b></label>
+                <input type="text" class="form-control" id="veichle" placeholder="Enter veichle number" name ="veichle" required>
+            </div>
+
+     
+            <button type="submit" class="btn btn-success" href="">Reserve</button>
+            <a href="/user/dashboard" class="btn btn-danger">Cancel</a>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>

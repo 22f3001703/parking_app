@@ -188,3 +188,10 @@ def searchAndBook():
 def userSummary():
     
     return render_template("userSummary.html")
+
+
+@controllers.route("/user/dashboard/booknow", methods=['GET','POST'])
+def bookNow():
+    return render_template("bookParking.html")
+
+
