@@ -163,6 +163,10 @@ def deleteParkingLOt(lot_id):
 @controllers.route("/user/dashboard", methods=['GET','POST'])
 def userdashboard():
     
+    reserveresult = ReserveParkingSpot()
+
+
+
     return render_template("userdashboard.html")
 
 
@@ -245,11 +249,19 @@ def reserveaspot():
         parking_time=datetime.utcnow()
         veichleNumber=request.form.get("veichle")
 
+        abc= ParkingLot.query.filter_by(id=lotid).first()
+
+        currentoccupancy=int(abc.occupied)
+
 
         spot = ParkingSpot.query.filter_by(id=spotid, lotid=lotid).first()
         if spot:
             spot.veichleNumber=veichleNumber
+            spot.status="O"
             db.session.commit()
+
+        abc.occupied=currentoccupancy+1    
+        db.session.commit()
 
 
         reserveparkingspot= ReserveParkingSpot(
@@ -258,6 +270,7 @@ def reserveaspot():
             lotid=lotid,
             email=email,
             parking_time=parking_time,
+            ispai=0
            
             
         )
