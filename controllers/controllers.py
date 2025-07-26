@@ -350,12 +350,13 @@ def releasespot(id):
 
 @controllers.route("/admin/dashboard/view/<int:id>",methods=["GET","POST"])
 def viewSpot(id):
-
-    return render_template("viewSpot.html")
+    spotDetails = ParkingSpot.query.filter_by(id=id).first()
+    print("here")
+    return render_template("viewSpot.html",spotDetails=spotDetails)
 
 
 @controllers.route("/admin/dashboard/view/extradetail/<int:id>",methods=["GET","POST"])
-def viewSpotInExtraDetail():
+def viewSpotInExtraDetail(id):
     return render_template("viewSpotInExtraDetails.html")
 
 

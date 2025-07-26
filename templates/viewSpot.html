@@ -42,7 +42,30 @@
       View/Delete Parking Spot
     </a>
   </div>
-        </nav>
+    </nav>
+
+        <div class="login-container mt-lg-5">
+        <h2>Viewing Parking Spot</h2>
+        <form action="" method="POST">
+       
+             <div class="mb-3">
+                <label for="spotid" class="form-label"><b>Spot Id</b></label>
+                <input type="text" class="form-control" id="spotid" name="spotid" value="{{spotDetails.id}}" required disabled>
+            </div>
+             <div class="mb-3">
+                <span>
+                <label for="status" class="form-label"><b>Status</b></label>
+                <a class="btn btn-warning" href="/admin/dashboard/view/extradetail/{{spotDetails.id}}">{{spotDetails.status}}</a>
+                </span>
+             </div>
+             
+            
+
+     
+            <button type="submit" class="btn btn-danger" href="">Delete</button>
+            <a href="/admin/dashboard" class="btn btn-info">Close</a>
+        </form>
+    </div>
 
 
 
