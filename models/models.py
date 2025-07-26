@@ -24,8 +24,8 @@ class ParkingLot(db.Model):
 class ParkingSpot(db.Model):
     id=db.Column(db.Integer(),primary_key=True)
     lotid=db.Column(db.Integer(),nullable=False)
-    status = db.Column(db.String(5),nullable=False)
-    veichleNumber=db.Column(db.String(50),nullable=False)
+    status = db.Column(db.String(5),default="A")
+    veichleNumber=db.Column(db.String(50),nullable=True)
 
 
 

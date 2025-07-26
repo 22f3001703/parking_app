@@ -4,6 +4,8 @@ from flask import Flask,render_template,redirect,request,Response,Blueprint,sess
 from database import db
 from models.models import User
 from models.models import ParkingLot
+from models.models import ParkingSpot
+from models.models import ReserveParkingSpot
 
 
 
@@ -118,6 +120,15 @@ def addParkingLot():
         db.session.add(newParkingLot)
         db.session.commit()
 
+
+        for _ in range(int(max_spots)):
+            newSpot=ParkingSpot(
+                lotid=newParkingLot.id,
+                status="A",
+                veichleNumber=None
+                )
+            db.session.add(newSpot)
+        db.session.commit()
         return redirect("/admin/dashboard")
         
     return render_template("addParkingLot.html")
@@ -161,12 +172,16 @@ def searchAndBook():
             search_result = ParkingLot.query.filter_by(pincode=query).all()
             for i in search_result:
                 print(i)
+            return render_template("userSearchandBook.html",search_result=search_result,querytype=querytype)    
         else:
             search_result=ParkingLot.query.filter_by(location_name=query).all() 
             for i in search_result:
-                print(i)     
+                print(i) 
+            return render_template("userSearchandBook.html",search_result=search_result,querytype=querytype)      
+    return render_template("userSearchandBook.html")    
 
-    return render_template("userSearchandBook.html",search_result=search_result,querytype=querytype)
+
+    
 
 
 @controllers.route("/user/dashboard/summary", methods=['GET','POST'])
