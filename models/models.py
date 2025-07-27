@@ -38,6 +38,6 @@ class ReserveParkingSpot(db.Model):
     parking_time=db.Column(db.DateTime,nullable=False,default=datetime.UTC)
     release_time=db.Column(db.DateTime,nullable=True)
     parkingcost=db.Column(db.Integer(),nullable=True,default=0)
-    ispai=db.Column(db.Integer(),default=0)
+    ispaid=db.Column(db.Integer(),default=0)
 
 

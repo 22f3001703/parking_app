@@ -223,7 +223,7 @@ def userdashboard():
             ReserveParkingSpot.lotid,
             ReserveParkingSpot.spotid,
             ReserveParkingSpot.parking_time,
-            ReserveParkingSpot.ispai,
+            ReserveParkingSpot.ispaid,
             ReserveParkingSpot.veichleNumber,
             ParkingLot.location_name
         ).join(ParkingLot,ReserveParkingSpot.lotid==ParkingLot.id)\
@@ -349,7 +349,7 @@ def reserveaspot():
                 lotid=lotid,
                 email=email,
                 parking_time=parking_time,
-                ispai=0,
+                ispaid=0,
                 veichleNumber=veichleNumber
             
                 
@@ -382,13 +382,13 @@ def releasespot(id):
             thespot = ParkingSpot.query.get(thereservation.spotid)
             
 
-            if thespot and thelot and thereservation.ispai==0:
+            if thespot and thelot and thereservation.ispaid==0:
                 thespot.status="A"
                 thespot.veichleNumber=None
                 
 
                 thereservation.release_time=release_time
-                thereservation.ispai=1
+                thereservation.ispaid=1
                 thereservation.parkingcost=totalfare
 
                 thelot.occupied-=1
