@@ -49,8 +49,8 @@ def login():
         
         theUser = User.query.filter_by(email=email).first()
         if not theUser:
-            render_template("duplicate.html")
-            return render_template("register.html") 
+            return render_template("duplicate.html")
+            
         if(theUser.password==password):
             print("Logged in succesfully🍀")
             
@@ -390,5 +390,17 @@ def deletethespot(id):
     return redirect ("/admin/dashboard")
 
 
+
+@controllers.route("/logout/<int:id>",methods=["GET","POST"])
+def logout(id):
+    if request.method=="POST":
+        theuser= User.query.get("id")
+        if theuser:
+            theuser.status = 0
+            db.session.commmit()
+
+    session.clear()
+
+    return redirect("/login")        
 
 
