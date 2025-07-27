@@ -357,7 +357,25 @@ def viewSpot(id):
 
 @controllers.route("/admin/dashboard/view/extradetail/<int:id>",methods=["GET","POST"])
 def viewSpotInExtraDetail(id):
-    return render_template("viewSpotInExtraDetails.html")
+
+    spotDetails = ParkingSpot.query.filter_by(id=id).first()
+    # status ,veichelnumber
+    reservationdetails=ReserveParkingSpot.query.filter_by(lotid=spotDetails.lotid,spotid=spotDetails.id).first()
+    if not reservationdetails:
+        reservationdetails={
+            "email":"None",
+            "parking_time":"None"
+        }
+    #emailor null , parkingtime or null
+    parkingdetails= ParkingLot.query.filter_by(id=spotDetails.lotid).first()
+    #location,#pincode #price #address
+
+    return render_template("viewSpotInExtraDetails.html",spotDetails=spotDetails,reservationdetails=reservationdetails,parkingdetails=parkingdetails)
+
+
+
+##have to create a flow for delteing the spot completely
+
 
 
 
