@@ -483,8 +483,11 @@ def editProfile(id):
             theuser.password=request.form.get("password")
             db.session.commit()
             print("done")
-            return redirect("/{session['role']}/dashboard")
+            return redirect(f"/{session.get('role')}/dashboard")
 
         return render_template("editProfile.html",theuser=theuser)
     else:
         return redirect("/login")
+    
+
+
