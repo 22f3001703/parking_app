@@ -466,4 +466,25 @@ def logout(id):
         session.clear()
     return redirect("/login")        
 
+@controllers.route("/editprofile/<int:id>",methods=["GET","POST"])
+def editProfile(id):
+    status = session.get("status")
+    if status is not None and int(status) > 0:
+        theuser=User.query.get(id)
+        print(theuser.fullname)
+        if not theuser:
+            return "User not found", 404
+        
+        if request.method=="POST":
+            theuser.fullname=request.form.get("fullname")
+            theuser.address=request.form.get("address")
+            theuser.pincode=request.form.get("pincode")
+            theuser.email=request.form.get("email")
+            theuser.password=request.form.get("password")
+            db.session.commit()
+            print("done")
+            return redirect("/{session['role']}/dashboard")
 
+        return render_template("editProfile.html",theuser=theuser)
+    else:
+        return redirect("/login")
