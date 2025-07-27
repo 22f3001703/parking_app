@@ -81,326 +81,389 @@ def login():
 
 @controllers.route("/admin/dashboard", methods=['GET','POST'])
 def admindashboard():
-    parkingspot=ParkingSpot.query.all()
+    status = session.get("status")
+    if status is not None and int(status) > 0:
+        parkingspot=ParkingSpot.query.all()
 
-    lotandspotstructure={}
-    for spot in parkingspot:
-        if spot.lotid not in lotandspotstructure:
-            lotandspotstructure[spot.lotid]=[]
-        lotandspotstructure[spot.lotid].append(spot)    
+        lotandspotstructure={}
+        for spot in parkingspot:
+            if spot.lotid not in lotandspotstructure:
+                lotandspotstructure[spot.lotid]=[]
+            lotandspotstructure[spot.lotid].append(spot)    
 
-    distinctlotids=list(lotandspotstructure.keys())    
-    lots=ParkingLot.query.filter(ParkingLot.id.in_(distinctlotids)).all()
-
-
-    thefinalcards=[]
-    for lot in lots:
-        thefinalcards.append(
-
-            {
-                'lot': lot,
-                'spots': lotandspotstructure[lot.id]
-            }
-        )
+        distinctlotids=list(lotandspotstructure.keys())    
+        lots=ParkingLot.query.filter(ParkingLot.id.in_(distinctlotids)).all()
 
 
-    print("ram")
+        thefinalcards=[]
+        for lot in lots:
+            thefinalcards.append(
+
+                {
+                    'lot': lot,
+                    'spots': lotandspotstructure[lot.id]
+                }
+            )
+
+
+        print("ram")
+        
+
+        return render_template("admindashboard.html",fullname=session["fullname"]
+                            ,status=session["status"],
+                            role=session["role"],thefinalcards=thefinalcards)
     
-
-    return render_template("admindashboard.html",fullname=session["fullname"]
-                           ,status=session["status"],
-                           role=session["role"],thefinalcards=thefinalcards)
+    else:
+        return redirect("/login")
 
 
 @controllers.route("/admin/dashboard/users", methods=['GET','POST'])
 def userDetails():
-    getuser = User.query.filter_by(role="user")
-    
-    for i in getuser:
-        print(i.pincode)
-    print("executed")    
-    return render_template("userDetails.html",getuser=getuser)
-
+    status = session.get("status")
+    if status is not None and int(status) > 0:
+        getuser = User.query.filter_by(role="user")
+        
+        for i in getuser:
+            print(i.pincode)
+        print("executed")    
+        return render_template("userDetails.html",getuser=getuser)
+    else:
+        return redirect("/login")
 
 @controllers.route("/admin/dashboard/summary", methods=['GET','POST'])
 def summary():
-    return render_template("summary.html")
+    status = session.get("status")
+    if status is not None and int(status) > 0:
+        return render_template("summary.html")
+    else:
+        return redirect("/login")
 
 
 @controllers.route("/admin/dashboard/search", methods=['GET','POST'])
 def search():
-    return render_template("search.html")
+    status = session.get("status")
+    if status is not None and int(status) > 0:
+        return render_template("search.html")
+    else:
+        return redirect("/login")
 
 
 @controllers.route("/admin/dashboard/addparkinglot", methods=['GET','POST'])
 def addParkingLot():
-    if request.method=='POST':
-        location_name=request.form.get("location_name")
-        address = request.form.get("address")
-        pincode= request.form.get("pincode")
-        price= request.form.get('price')
-        max_spots=request.form.get("max_spots")
+    status = session.get("status")
+    if status is not None and int(status) > 0:
+        if request.method=='POST':
+            location_name=request.form.get("location_name")
+            address = request.form.get("address")
+            pincode= request.form.get("pincode")
+            price= request.form.get('price')
+            max_spots=request.form.get("max_spots")
 
-        newParkingLot= ParkingLot(location_name=location_name,address=address,pincode=pincode,price=price,max_spots=max_spots,occupied=0)
-        db.session.add(newParkingLot)
-        db.session.commit()
+            newParkingLot= ParkingLot(location_name=location_name,address=address,pincode=pincode,price=price,max_spots=max_spots,occupied=0)
+            db.session.add(newParkingLot)
+            db.session.commit()
 
 
-        for _ in range(int(max_spots)):
-            newSpot=ParkingSpot(
-                lotid=newParkingLot.id,
-                status="A",
-                veichleNumber=None
-                )
-            db.session.add(newSpot)
-        db.session.commit()
-        return redirect("/admin/dashboard")
-        
-    return render_template("addParkingLot.html")
+            for _ in range(int(max_spots)):
+                newSpot=ParkingSpot(
+                    lotid=newParkingLot.id,
+                    status="A",
+                    veichleNumber=None
+                    )
+                db.session.add(newSpot)
+            db.session.commit()
+            return redirect("/admin/dashboard")
+            
+        return render_template("addParkingLot.html")
+    else:
+        return redirect("/login")
 
 
 @controllers.route("/admin/dashboard/editlot/<int:lot_id>", methods=['GET','POST'])
 def editParkingLot(lot_id):
-    parkinglot=ParkingLot.query.get_or_404(lot_id)
-    if request.method=="POST":
-        parkinglot.location_name = request.form.get("location_name")
-        parkinglot.address=   request.form.get("address")
-        parkinglot.pincode= request.form.get("pincode")
-        parkinglot.price= request.form.get("price")
-        parkinglot.max_spots = request.form.get("max_spots")
-        db.session.commit()
-        return redirect("/admin/dashboard")
-    return render_template("editParkingLot.html",parkinglot=parkinglot)
-
+    status = session.get("status")
+    if status is not None and int(status) > 0:
+        parkinglot=ParkingLot.query.get_or_404(lot_id)
+        if request.method=="POST":
+            parkinglot.location_name = request.form.get("location_name")
+            parkinglot.address=   request.form.get("address")
+            parkinglot.pincode= request.form.get("pincode")
+            parkinglot.price= request.form.get("price")
+            parkinglot.max_spots = request.form.get("max_spots")
+            db.session.commit()
+            return redirect("/admin/dashboard")
+        return render_template("editParkingLot.html",parkinglot=parkinglot)
+    else:
+        return redirect("/login")
 
 @controllers.route("/admin/dashboard/deletelot/<int:lot_id>", methods=['GET','POST'])
 def deleteParkingLOt(lot_id):
-    parkinglot = ParkingLot.query.get_or_404(lot_id)
-    if(parkinglot.occupied>0):
-        print("Encountered")
-        return render_template("deleteerror.html")
-    db.session.delete(parkinglot)
-    db.session.commit()
-    return redirect("/admin/dashboard")
+    status = session.get("status")
+    if status is not None and int(status) > 0:
+        parkinglot = ParkingLot.query.get_or_404(lot_id)
+        if(parkinglot.occupied>0):
+            print("Encountered")
+            return render_template("deleteerror.html")
+        db.session.delete(parkinglot)
+        db.session.commit()
+        return redirect("/admin/dashboard")
+    else:
+        return redirect("/login")
 
 
 @controllers.route("/user/dashboard", methods=['GET','POST'])
 def userdashboard():
+    status = session.get("status")
+    if status is not None and int(status) > 0:
 
-    useremail=session.get("email")
+        useremail=session.get("email")
 
-    recentParkingHistory = db.session.query(
-        ReserveParkingSpot.id,
-        ReserveParkingSpot.lotid,
-        ReserveParkingSpot.spotid,
-        ReserveParkingSpot.parking_time,
-        ReserveParkingSpot.ispai,
-        ReserveParkingSpot.veichleNumber,
-        ParkingLot.location_name
-    ).join(ParkingLot,ReserveParkingSpot.lotid==ParkingLot.id)\
-    .filter(ReserveParkingSpot.email==useremail)\
-    .all()
-
-
+        recentParkingHistory = db.session.query(
+            ReserveParkingSpot.id,
+            ReserveParkingSpot.lotid,
+            ReserveParkingSpot.spotid,
+            ReserveParkingSpot.parking_time,
+            ReserveParkingSpot.ispai,
+            ReserveParkingSpot.veichleNumber,
+            ParkingLot.location_name
+        ).join(ParkingLot,ReserveParkingSpot.lotid==ParkingLot.id)\
+        .filter(ReserveParkingSpot.email==useremail)\
+        .all()
 
 
-    return render_template("userdashboard.html",recentParkingHistory=recentParkingHistory)
+
+
+        return render_template("userdashboard.html",recentParkingHistory=recentParkingHistory)
+    else:
+        return redirect("/login")
 
 
 @controllers.route("/user/dashboard/searchandbook", methods=['GET','POST'])
 def searchAndBook():
-    if request.method=="POST":
-        querytype=request.form.get("querytype")
-        query=request.form.get("query")
-        if querytype=="pincode":
-            search_result = ParkingLot.query.filter_by(pincode=query).all()
-            for i in search_result:
-                print(i)
-            return render_template("userSearchandBook.html",search_result=search_result,querytype=querytype)    
-        else:
-            search_result=ParkingLot.query.filter_by(location_name=query).all() 
-            for i in search_result:
-                print(i) 
-            return render_template("userSearchandBook.html",search_result=search_result,querytype=querytype)      
-    return render_template("userSearchandBook.html")    
-
+    status = session.get("status")
+    if status is not None and int(status) > 0:
+        if request.method=="POST":
+            querytype=request.form.get("querytype")
+            query=request.form.get("query")
+            if querytype=="pincode":
+                search_result = ParkingLot.query.filter_by(pincode=query).all()
+                for i in search_result:
+                    print(i)
+                return render_template("userSearchandBook.html",search_result=search_result,querytype=querytype)    
+            else:
+                search_result=ParkingLot.query.filter_by(location_name=query).all() 
+                for i in search_result:
+                    print(i) 
+                return render_template("userSearchandBook.html",search_result=search_result,querytype=querytype)      
+        return render_template("userSearchandBook.html")    
+    else:
+        return redirect("/login")
 
 @controllers.route("/user/dashboard/summary", methods=['GET','POST'])
 def userSummary():
+    status = session.get("status")
+    if status is not None and int(status) > 0:
     
-    return render_template("userSummary.html")
+        return render_template("userSummary.html")
+    else:
+        return redirect("/login")
 
 
 @controllers.route("/user/dashboard/booknow/<int:id>", methods=['GET','POST'])
 def bookNow(id):
-    freespots=ParkingSpot.query.filter_by(lotid=id,status='A').with_entities(ParkingSpot.id).all()
-    avaspots=[spot_id for (spot_id,) in freespots]
+    status = session.get("status")
+    if status is not None and int(status) > 0:
+        freespots=ParkingSpot.query.filter_by(lotid=id,status='A').with_entities(ParkingSpot.id).all()
+        avaspots=[spot_id for (spot_id,) in freespots]
 
 
-    for spot_id in avaspots:
-        print(spot_id)
+        for spot_id in avaspots:
+            print(spot_id)
 
-    if(request.method=="POST"):
-        print("post")  
-        spotid=request.form.get("spot_id")
-        lotid=request.form.get("lotid")
-        email=request.form.get("email")
-        parking_time=datetime.utcnow()
-        veichleNumber=request.form.get("veichle")
+        if(request.method=="POST"):
+            print("post")  
+            spotid=request.form.get("spot_id")
+            lotid=request.form.get("lotid")
+            email=request.form.get("email")
+            parking_time=datetime.utcnow()
+            veichleNumber=request.form.get("veichle")
 
 
-        spot = ParkingSpot.query.filter_by(id=spotid, lotid=lotid).first()
-        if spot:
-            spot.veichleNumber=veichleNumber 
+            spot = ParkingSpot.query.filter_by(id=spotid, lotid=lotid).first()
+            if spot:
+                spot.veichleNumber=veichleNumber 
+                db.session.commit()
+
+
+            reserveparkingspot= ReserveParkingSpot(
+                
+                spotid=spotid,
+                lotid=lotid,
+                email=email,
+                parking_time=parking_time,
+                veichleNumber=veichleNumber
+                
+            )
+            db.session.add(reserveparkingspot)
             db.session.commit()
 
+            return redirect("/user/dashboard")
 
-        reserveparkingspot= ReserveParkingSpot(
-            
-            spotid=spotid,
-            lotid=lotid,
-            email=email,
-            parking_time=parking_time,
-            veichleNumber=veichleNumber
-            
-        )
-        db.session.add(reserveparkingspot)
-        db.session.commit()
+        return render_template("bookParking.html",avaspots=avaspots , id = id )
+    else:
+        return redirect("/login")
 
-        return redirect("/user/dashboard")
-
-    return render_template("bookParking.html",avaspots=avaspots , id = id )
 
 
 @controllers.route("/user/dashboard/reservethespot", methods=['GET','POST'])
+
 def reserveaspot():
-    if(request.method=="POST"):
-        print("post")  
-        spotid=request.form.get("spot_id")
-        lotid=request.form.get("lotid")
-        email=request.form.get("email")
-        parking_time=datetime.utcnow()
-        veichleNumber=request.form.get("veichle")
+    status = session.get("status")
+    if status is not None and int(status) > 0:
+        if(request.method=="POST"):
+            print("post")  
+            spotid=request.form.get("spot_id")
+            lotid=request.form.get("lotid")
+            email=request.form.get("email")
+            parking_time=datetime.utcnow()
+            veichleNumber=request.form.get("veichle")
 
-        abc= ParkingLot.query.filter_by(id=lotid).first()
+            abc= ParkingLot.query.filter_by(id=lotid).first()
 
-        currentoccupancy=int(abc.occupied)
+            currentoccupancy=int(abc.occupied)
 
 
-        spot = ParkingSpot.query.filter_by(id=spotid, lotid=lotid).first()
-        if spot:
-            spot.veichleNumber=veichleNumber
-            spot.status="O"
+            spot = ParkingSpot.query.filter_by(id=spotid, lotid=lotid).first()
+            if spot:
+                spot.veichleNumber=veichleNumber
+                spot.status="O"
+                db.session.commit()
+
+            abc.occupied=currentoccupancy+1    
             db.session.commit()
 
-        abc.occupied=currentoccupancy+1    
-        db.session.commit()
 
-
-        reserveparkingspot= ReserveParkingSpot(
+            reserveparkingspot= ReserveParkingSpot(
+                
+                spotid=spotid,
+                lotid=lotid,
+                email=email,
+                parking_time=parking_time,
+                ispai=0,
+                veichleNumber=veichleNumber
             
-            spotid=spotid,
-            lotid=lotid,
-            email=email,
-            parking_time=parking_time,
-            ispai=0,
-            veichleNumber=veichleNumber
-           
-            
-        )
-        db.session.add(reserveparkingspot)
-        db.session.commit()
+                
+            )
+            db.session.add(reserveparkingspot)
+            db.session.commit()
 
-        return redirect("/user/dashboard")
+            return redirect("/user/dashboard")
+    else:
+        return redirect("/login")    
     
 
 @controllers.route("/user/dashboard/releasespot/<int:id>", methods=['GET','POST'])
 def releasespot(id):
-    thereservation = ReserveParkingSpot.query.get_or_404(id)
-    release_time=datetime.utcnow()
-    duration = release_time-thereservation.parking_time
-    timeinhours=int(duration.total_seconds()//3600)
-
-    if duration.total_seconds()%3600!=0:
-        timeinhours+=1
-    thelot = ParkingLot.query.get(thereservation.lotid)
-    totalfare=timeinhours*thelot.price
-    if request.method=="POST":
+    status = session.get("status")
+    if status is not None and int(status) > 0:
         thereservation = ReserveParkingSpot.query.get_or_404(id)
-        
+        release_time=datetime.utcnow()
+        duration = release_time-thereservation.parking_time
+        timeinhours=int(duration.total_seconds()//3600)
 
-        thespot = ParkingSpot.query.get(thereservation.spotid)
-        
-
-        if thespot and thelot and thereservation.ispai==0:
-            thespot.status="A"
-            thespot.veichleNumber=None
+        if duration.total_seconds()%3600!=0:
+            timeinhours+=1
+        thelot = ParkingLot.query.get(thereservation.lotid)
+        totalfare=timeinhours*thelot.price
+        if request.method=="POST":
+            thereservation = ReserveParkingSpot.query.get_or_404(id)
             
 
-            thereservation.release_time=release_time
-            thereservation.ispai=1
-            thereservation.parkingcost=totalfare
+            thespot = ParkingSpot.query.get(thereservation.spotid)
+            
 
-            thelot.occupied-=1
-            db.session.commit()
-            return redirect("/user/dashboard")
+            if thespot and thelot and thereservation.ispai==0:
+                thespot.status="A"
+                thespot.veichleNumber=None
+                
 
-    return render_template("releaseSpot.html",thereservation=thereservation,release_time=release_time,totalfare=totalfare,id=id)
-   
+                thereservation.release_time=release_time
+                thereservation.ispai=1
+                thereservation.parkingcost=totalfare
+
+                thelot.occupied-=1
+                db.session.commit()
+                return redirect("/user/dashboard")
+
+        return render_template("releaseSpot.html",thereservation=thereservation,release_time=release_time,totalfare=totalfare,id=id)
+    else:
+        return redirect("/login")
 
 @controllers.route("/admin/dashboard/view/<int:id>",methods=["GET","POST"])
 def viewSpot(id):
-    spotDetails = ParkingSpot.query.filter_by(id=id).first()
-    print("here")
-    return render_template("viewSpot.html",spotDetails=spotDetails)
+    status = session.get("status")
+    if status is not None and int(status) > 0:
+        spotDetails = ParkingSpot.query.filter_by(id=id).first()
+        print("here")
+        return render_template("viewSpot.html",spotDetails=spotDetails)
+    else:
+        return redirect("/login")
 
 
 @controllers.route("/admin/dashboard/view/extradetail/<int:id>",methods=["GET","POST"])
 def viewSpotInExtraDetail(id):
-
-    spotDetails = ParkingSpot.query.filter_by(id=id).first()
+    status = session.get("status")
+    if status is not None and int(status) > 0:
+        spotDetails = ParkingSpot.query.filter_by(id=id).first()
+        
+        reservationdetails=ReserveParkingSpot.query.filter_by(lotid=spotDetails.lotid,spotid=spotDetails.id).first()
+        if not reservationdetails:
+            reservationdetails={
+                "email":"None",
+                "parking_time":"None"
+            }
+        
+        parkingdetails= ParkingLot.query.filter_by(id=spotDetails.lotid).first()
     
-    reservationdetails=ReserveParkingSpot.query.filter_by(lotid=spotDetails.lotid,spotid=spotDetails.id).first()
-    if not reservationdetails:
-        reservationdetails={
-            "email":"None",
-            "parking_time":"None"
-        }
-    
-    parkingdetails= ParkingLot.query.filter_by(id=spotDetails.lotid).first()
-   
 
-    return render_template("viewSpotInExtraDetails.html",spotDetails=spotDetails,reservationdetails=reservationdetails,parkingdetails=parkingdetails)
+        return render_template("viewSpotInExtraDetails.html",spotDetails=spotDetails,reservationdetails=reservationdetails,parkingdetails=parkingdetails)
+    else:
+        return redirect("/login")
 
 
-
-##have to create a flow for delteing the spot completely
+##### i have to create a flow for delteing the spot completely
 @controllers.route("/admin/dashboard/view/delete/<int:id>",methods=["post","get"])
 def deletethespot(id):
-    spotDetails = ParkingSpot.query.filter_by(id=id).first()
-    parkingdetails= ParkingLot.query.filter_by(id=spotDetails.lotid).first()
+    status = session.get("status")
+    if status is not None and int(status) > 0:
+        spotDetails = ParkingSpot.query.filter_by(id=id).first()
+        parkingdetails= ParkingLot.query.filter_by(id=spotDetails.lotid).first()
 
-    if(spotDetails.status=="A"):
-        parkingdetails.max_spots-=1
-        db.session.delete(spotDetails)
-        db.session.commit()
+        if(spotDetails.status=="A"):
+            parkingdetails.max_spots-=1
+            db.session.delete(spotDetails)
+            db.session.commit()
+        else:
+            return render_template("deletespot.html")    
+
+        return redirect ("/admin/dashboard")
     else:
-        return render_template("deletespot.html")    
+        return redirect("/login")
 
-    return redirect ("/admin/dashboard")
 
 
 
 @controllers.route("/logout/<int:id>",methods=["GET","POST"])
 def logout(id):
-    if request.method=="POST":
-        theuser= User.query.get("id")
-        if theuser:
-            theuser.status = 0
-            db.session.commmit()
+    status = session.get("status")
+    if status is not None and int(status) > 0:
+        if request.method=="POST":
+            theuser= User.query.get("id")
+            if theuser:
+                theuser.status = 0
+                db.session.commmit()
 
-    session.clear()
-
+        session.clear()
     return redirect("/login")        
 
 
