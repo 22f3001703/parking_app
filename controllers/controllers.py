@@ -349,11 +349,35 @@ def editParkingLot(lot_id):
     if status is not None and int(status) > 0:
         parkinglot=ParkingLot.query.get_or_404(lot_id)
         if request.method=="POST":
+            old_max_spots = parkinglot.max_spots
+            occupied_spots = parkinglot.occupied
             parkinglot.location_name = request.form.get("location_name")
             parkinglot.address=   request.form.get("address")
             parkinglot.pincode= request.form.get("pincode")
             parkinglot.price= request.form.get("price")
-            parkinglot.max_spots = request.form.get("max_spots")
+            max_spots = request.form.get("max_spots")
+            
+
+
+            if int(max_spots) < int(occupied_spots):
+                return render_template("error.html")
+            excess_spots = int(old_max_spots) - int(max_spots)
+            free_spots = ParkingSpot.query.filter_by(lotid=lot_id, status="A").order_by(ParkingSpot.id.desc()).limit(excess_spots).all()
+            if int(max_spots) < int(old_max_spots):
+                
+                if len(free_spots) < int(excess_spots):
+                    return render_template("error.html")
+                for spot in free_spots:
+                    db.session.delete(spot)
+            elif int(max_spots) > int(old_max_spots):
+                for _ in range(int(max_spots) - int(old_max_spots)):
+                    new_spot = ParkingSpot(
+                        lotid=parkinglot.id,
+                        status="A",
+                        veichleNumber=None
+                    )
+                    db.session.add(new_spot)    
+            parkinglot.max_spots = request.form.get("max_spots")        
             db.session.commit()
             return redirect("/admin/dashboard")
         return render_template("editParkingLot.html",parkinglot=parkinglot)
