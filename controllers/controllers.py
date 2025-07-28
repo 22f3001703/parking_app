@@ -211,6 +211,57 @@ def summary():
         return render_template("summary.html",graphpath=graphpath,piepath=piepath)
     else:
         return redirect("/login")
+    
+@controllers.route("/user/dashboard/summary", methods=['GET','POST'])
+def userSummary():
+    status = session.get("status")
+    
+    if status is not None and int(status) > 0:
+        email=session.get("email")
+        reservations = ReserveParkingSpot.query.filter_by(email=email).all()
+        parkinglots= ParkingLot.query.all()
+        
+        nameforid={lot.id: lot.location_name for lot in parkinglots}
+
+
+        usecount={}
+
+        for x in reservations:
+            location=nameforid.get(x.lotid,"unknown")
+            if location not in usecount:
+                usecount[location] = 1
+            else:
+                usecount[location] += 1
+
+        message = ""
+        if not usecount:
+            message = "Didn't used any parking yet"
+
+        loius= list(usecount.keys())
+        vitioun=list(usecount.values())    
+    
+
+        fig , ax = p.subplots()
+        ax.pie(vitioun,labels=loius,autopct='%1.1f%%',startangle=120)
+        ax.axis("equal")
+        ax.set_title("Parking Lot Usage Summary")
+
+
+        output_dir = os.path.join("static", "images")
+        os.makedirs(output_dir, exist_ok=True)
+
+        pieimagepath="userusagepiechart.png"
+        imagepath=os.path.join(output_dir,pieimagepath)
+        fig.savefig(imagepath)
+
+        piepath=f'/static/images/{pieimagepath}'
+        p.close(fig)
+
+
+
+        return render_template("userSummary.html",message=message,piepath=piepath)
+    else:
+        return redirect("/login")    
 
 
 @controllers.route("/admin/dashboard/search", methods=['GET','POST'])
@@ -372,14 +423,7 @@ def searchAndBook():
     else:
         return redirect("/login")
 
-@controllers.route("/user/dashboard/summary", methods=['GET','POST'])
-def userSummary():
-    status = session.get("status")
-    if status is not None and int(status) > 0:
-    
-        return render_template("userSummary.html")
-    else:
-        return redirect("/login")
+
 
 
 @controllers.route("/user/dashboard/booknow/<int:id>", methods=['GET','POST'])
