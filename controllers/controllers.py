@@ -1,5 +1,5 @@
 from flask import Flask,render_template,redirect,request,Response,Blueprint,session
-
+import os
 
 from database import db
 from models.models import User
@@ -133,6 +133,9 @@ def userDetails():
     else:
         return redirect("/login")
 
+
+
+
 @controllers.route("/admin/dashboard/summary", methods=['GET','POST'])
 def summary():
     status = session.get("status")
@@ -171,19 +174,41 @@ def summary():
         axis1.set_ylabel('Spots')       
         axis1.set_title("Occupied vs available ones")
         axis1.set_xticks(x)
-        axis1.set_xticklabels(lotnames,rotation=45,ha="right")
+        axis1.set_xticklabels(lotnames,rotation=0,ha="right")
         axis1.legend()
 
 
-        image1=io.BytesIO()
-        spot1.tight_layout()
-        spot1.savefig(image1,format='png')
-        image1.seek(0)
-        graphpath=base64.b64encode(image1.getvalue()).decode()
-        print(graphpath)
 
 
-        return render_template("summary.html",graphpath=graphpath)
+
+
+        outputlocation=os.path.join('static','images')
+        os.makedirs(outputlocation,exist_ok=True)
+
+        image_name="occupiedvsnonoccupied.png"
+        imagepath=os.path.join(outputlocation,image_name)
+        spot1.savefig(imagepath)
+
+        graphpath=f'/static/images/{image_name}'
+        p.close(spot1)
+
+
+
+
+        alpha, beta = p.subplots()
+        beta.pie(revenues, labels=lotnames, autopct='%1.1f%%', startangle=90)
+        beta.axis('equal')
+        beta.set_title("Revenue Distribution by Lot")
+        
+        pieimagepath="revenuepiechart.png"
+        imagepath=os.path.join(outputlocation,pieimagepath)
+        alpha.savefig(imagepath)
+
+        piepath=f'/static/images/{pieimagepath}'
+        p.close(alpha)
+
+
+        return render_template("summary.html",graphpath=graphpath,piepath=piepath)
     else:
         return redirect("/login")
 
