@@ -56,7 +56,7 @@
   <option value="location" >
     Location
   </option>
-  <option value="Pincode">
+  <option value="pincode">
     Pincode
   </option>
   <input type="text" name="query" placeholder="Enter the search Item"style="margin-left: 5px;"/>
@@ -69,14 +69,42 @@
   <div class="container-fluid text-center">
     <a class="navbar-brand mx-auto " href="#">
       <img src="https://images.pexels.com/photos/1194775/pexels-photo-1194775.jpeg?_gl=1*pa35h6*_ga*MTQyOTczMDU2MS4xNzUzMzU4OTQw*_ga_8JE65Q40S6*czE3NTMzNTg5MzkkbzEkZzEkdDE3NTMzNTkxMjgkajQzJGwwJGgw" width="30" height="24" class="d-inline-block align-text-top" style="align-content: center;">
-      Search
+      searching in parking lots @{{ query }} location
     </a>
+    
 
  </div>
 </nav>
-<p>Aaja mere raaja tughe jannat dikahu mae 
 
-</p>
+
+<div class="container">
+    <div class="row">
+      {% for x in pattey %}
+      {%set lot = x["lot"] %}
+      {%set spots = x["spots"] %}
+        <div class="col-md-3 col-sm-6">
+        <div class="card " style="width: 18rem;  margin-left: 10px; margin-top: 10px;">
+        <div class="card-body text-center" style="margin:10px">
+        <h5 class="card-title">{{x["lot"].location_name}}</h5>
+        <span style="align-content: center;"><a href="/admin/dashboard/editlot/{{ lot.id }}">Edit</a>||<a href="/admin/dashboard/deletelot/{{ lot.id }}">Delete</a></span>
+        <p>Occupied({{x["lot"].occupied}}/{{x["lot"].max_spots}})</p>
+        <hr>
+     {% for spot in spots %} 
+     {% if spot.status == "O" %} 
+    <a type="button" class="btn btn-danger" style="border-radius: 50%;" href="/admin/dashboard/view/{{spot.id}}">O</a>
+    {% else %}
+    
+    <a type="button" class="btn btn-success" style="border-radius: 50%;" href="/admin/dashboard/view/{{spot.id}}">A</a>
+     {% endif %}
+     {%endfor%}
+    </div>
+    </div>
+    </div>
+     {% endfor %} 
+  </div>
+</div>
+
+
 
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>

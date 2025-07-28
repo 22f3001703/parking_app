@@ -163,10 +163,12 @@ def search():
             thespot = ParkingSpot.query.filter(ParkingSpot.lotid.in_(querydataids)).all()  
 
             spotstructure={}
-
+            
+            print(len(querydata))
             for s in thespot:
                 spotstructure.setdefault(s.lotid,[]).append(s)
 
+            
             pattey=[]
 
             for x in querydata:
@@ -174,6 +176,12 @@ def search():
                     "lot":x,
                     "spots":spotstructure.get(x.id,[])
                 })  
+
+            print(len(pattey))
+
+            for i in pattey:
+                print("ram")
+                print(i["lot"].location_name)    
         return render_template("search.html",query=query,pattey=pattey)
     else:
         return redirect("/login")
