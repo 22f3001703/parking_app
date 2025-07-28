@@ -392,7 +392,11 @@ def deleteParkingLOt(lot_id):
         if(parkinglot.occupied>0):
             print("Encountered")
             return render_template("deleteerror.html")
-        db.session.delete(parkinglot)
+        
+        related_spots = ParkingSpot.query.filter_by(lotid=lot_id).all()
+        for spot in related_spots:
+            db.session.delete(spot)
+        db.session.delete(parkinglot)    
         db.session.commit()
         return redirect("/admin/dashboard")
     else:
