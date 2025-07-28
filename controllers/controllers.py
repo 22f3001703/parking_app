@@ -141,9 +141,40 @@ def summary():
 
 @controllers.route("/admin/dashboard/search", methods=['GET','POST'])
 def search():
+    query=None
+    querytype=None
+    pattey=[]
     status = session.get("status")
     if status is not None and int(status) > 0:
-        return render_template("search.html")
+        if request.method=="POST":
+            querytype = request.form.get("querytype")
+            query = request.form.get("query")
+
+
+            if querytype=="location":
+                querydata=ParkingLot.query.filter(ParkingLot.location_name.ilike(f"%{query}")).all()
+            elif querytype == "pincode":
+                querydata= ParkingLot.query.filter(ParkingLot.pincode==int(query)).all()    
+            else:
+                querydata=[]
+
+            querydataids= [query.id for query in querydata ] 
+
+            thespot = ParkingSpot.query.filter(ParkingSpot.lotid.in_(querydataids)).all()  
+
+            spotstructure={}
+
+            for s in thespot:
+                spotstructure.setdefault(s.lotid,[]).append(s)
+
+            pattey=[]
+
+            for x in querydata:
+                pattey.append({
+                    "lot":x,
+                    "spots":spotstructure.get(x.id,[])
+                })  
+        return render_template("search.html",query=query,pattey=pattey)
     else:
         return redirect("/login")
 
