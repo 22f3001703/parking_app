@@ -437,35 +437,6 @@ def bookNow(id):
         for spot_id in avaspots:
             print(spot_id)
 
-        if(request.method=="POST"):
-            print("post")  
-            spotid=request.form.get("spot_id")
-            lotid=request.form.get("lotid")
-            email=request.form.get("email")
-            parking_time=datetime.utcnow()
-            veichleNumber=request.form.get("veichle")
-
-
-            spot = ParkingSpot.query.filter_by(id=spotid, lotid=lotid).first()
-            if spot:
-                spot.veichleNumber=veichleNumber 
-                db.session.commit()
-
-
-            reserveparkingspot= ReserveParkingSpot(
-                
-                spotid=spotid,
-                lotid=lotid,
-                email=email,
-                parking_time=parking_time,
-                veichleNumber=veichleNumber
-                
-            )
-            db.session.add(reserveparkingspot)
-            db.session.commit()
-
-            return redirect("/user/dashboard")
-
         return render_template("bookParking.html",avaspots=avaspots , id = id )
     else:
         return redirect("/login")
@@ -479,7 +450,8 @@ def reserveaspot():
     if status is not None and int(status) > 0:
         if(request.method=="POST"):
             print("post")  
-            spotid=request.form.get("spot_id")
+            spotid=request.form.get("spotid")
+            print("spotid",spotid)
             lotid=request.form.get("lotid")
             email=request.form.get("email")
             parking_time=datetime.utcnow()

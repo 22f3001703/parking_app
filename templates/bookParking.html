@@ -47,16 +47,10 @@
     <div class="login-container">
         <h2>Reserve Parking Spot</h2>
         <form action="/user/dashboard/reservethespot" method="POST">
-       
-            <div class="mb-3">
-                <label for="spot_id" class="form-label"><b>Select Available Spot</b></label>
-                <select type="number" class="form-control" id="spot_id"  name ="spot_id" required>
-                    <option value="" disabled selected>Select an available spot</option>
-                    {% for spot in avaspots %}
-                    <option value="{{spot}}">{{spot}}</option>
-                    {%endfor%}
-                    </select>
-            </div>
+            
+            <label for="spotid" class="form-label"><b>Spot Id</b></label>
+            <input type="text" name="spotid" id="spotid" class="form-control" value="{{avaspots[0]}}" >
+
           
             <div class="mb-3">
                 <label for="lotid" class="form-label"><b>Lot Id</b></label>
