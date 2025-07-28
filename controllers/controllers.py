@@ -7,6 +7,9 @@ from models.models import ParkingLot
 from models.models import ParkingSpot
 from models.models import ReserveParkingSpot
 from datetime import datetime 
+import matplotlib.pyplot as p
+import io
+import base64
 
 
 
@@ -134,7 +137,53 @@ def userDetails():
 def summary():
     status = session.get("status")
     if status is not None and int(status) > 0:
-        return render_template("summary.html")
+        parkinglots= ParkingLot.query.all()
+        reservations = ReserveParkingSpot.query.filter_by(ispaid=1).all()
+
+
+
+        occupiedones=[]
+        availableones=[]
+        revenues=[]
+        lotnames=[]
+
+        for t in parkinglots:
+            lotnames.append(t.location_name)
+            occupiedones.append(t.occupied)
+            s = t.max_spots-t.occupied
+            availableones.append(s)
+
+            therevenue=sum(
+                z.parkingcost for z in reservations if (z.lotid==t.id)
+            )
+
+            revenues.append(therevenue)
+
+        for x in revenues:
+            print(x)  
+        for x in lotnames:
+            print( x )  
+
+        spot1,axis1=p.subplots()
+        x= range(len(lotnames))
+        axis1.bar(x, occupiedones, label='Occupied', color='red')
+        axis1.bar(x, availableones, bottom=occupiedones, label='Available', color='green')
+        axis1.set_ylabel('Spots')       
+        axis1.set_title("Occupied vs available ones")
+        axis1.set_xticks(x)
+        axis1.set_xticklabels(lotnames,rotation=45,ha="right")
+        axis1.legend()
+
+
+        image1=io.BytesIO()
+        spot1.tight_layout()
+        spot1.savefig(image1,format='png')
+        image1.seek(0)
+        graphpath=base64.b64encode(image1.getvalue()).decode()
+        print(graphpath)
+
+
+        return render_template("summary.html",graphpath=graphpath)
     else:
         return redirect("/login")
 
