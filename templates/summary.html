@@ -65,7 +65,11 @@
     </div>
     <div class="col-md-6">
       <h4>Revenue of Lots</h4>
-      <img src="{{ piepath }}" alt="Revenue Pie Chart" class="img-fluid" style="height: 450px;">
+      {% if piepath %}
+    <img src="{{ piepath }}" alt="Revenue Pie Chart">
+{% else %}
+    <p>No revenue data available to display pie chart.</p>
+{% endif %}
     </div>
   </div>
 </div>

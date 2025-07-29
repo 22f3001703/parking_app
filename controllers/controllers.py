@@ -194,19 +194,20 @@ def summary():
 
 
 
+        if sum(revenues) > 0:
+            alpha, beta = p.subplots()
+            beta.pie(revenues, labels=lotnames, autopct='%1.1f%%', startangle=90)
+            beta.axis('equal')
+            beta.set_title("Revenue Distribution by Lot")
+            
+            pieimagepath="revenuepiechart.png"
+            imagepath=os.path.join(outputlocation,pieimagepath)
+            alpha.savefig(imagepath)
 
-        alpha, beta = p.subplots()
-        beta.pie(revenues, labels=lotnames, autopct='%1.1f%%', startangle=90)
-        beta.axis('equal')
-        beta.set_title("Revenue Distribution by Lot")
-        
-        pieimagepath="revenuepiechart.png"
-        imagepath=os.path.join(outputlocation,pieimagepath)
-        alpha.savefig(imagepath)
-
-        piepath=f'/static/images/{pieimagepath}'
-        p.close(alpha)
-
+            piepath=f'/static/images/{pieimagepath}'
+            p.close(alpha)
+        else:
+            piepath = None
 
         return render_template("summary.html",graphpath=graphpath,piepath=piepath)
     else:
