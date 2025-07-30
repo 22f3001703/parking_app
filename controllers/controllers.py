@@ -640,6 +640,9 @@ def editProfile(id):
             theuser.email=request.form.get("email")
             theuser.password=request.form.get("password")
             db.session.commit()
+            session["email"]=theuser.email
+            session["fullname"]=theuser.fullname
+            session["address"]=theuser.address
             print("done")
             return redirect(f"/{session.get('role')}/dashboard")
 
